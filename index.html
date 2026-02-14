@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>✈️ AirMusic – Stories Worth Sharing</title>
+  <meta name="description" content="A minimalist blog platform for sharing journeys, moments, and reflections">
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1995/1995467.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============ AUTH CONTAINER ============ -->
+  <div id="authContainer" class="auth-backdrop" style="display:none">
+    <div class="auth-wrapper">
+      <!-- LOGIN PAGE -->
+      <div id="loginPage" class="auth-panel auth-panel-active">
+        <div class="auth-illustration">
+          <div class="plane-icon">✈️</div>
+        </div>
+        <h1 class="auth-title">Welcome to AirMusic</h1>
+        <p class="auth-description">Share your stories. Inspire others.</p>
+        
+        <form id="loginForm" class="auth-form">
+          <div class="input-group">
+            <label for="loginEmail">Email Address</label>
+            <input type="email" id="loginEmail" class="input-field" placeholder="you@example.com" required>
+          </div>
+          <div class="input-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-fullwidth">Sign In</button>
+        </form>
+
+        <div class="auth-divider">
+          <span>No account yet?</span>
+        </div>
+        
+        <button type="button" id="switchToSignup" class="btn btn-secondary btn-fullwidth">Create Account</button>
+      </div>
+
+      <!-- SIGNUP PAGE -->
+      <div id="signupPage" class="auth-panel">
+        <div class="auth-illustration">
+          <div class="sparkle-icon">✨</div>
+        </div>
+        <h1 class="auth-title">Join AirMusic</h1>
+        <p class="auth-description">Start your storytelling journey today</p>
+        
+        <form id="signupForm" class="auth-form">
+          <div class="input-group">
+            <label for="signupName">Full Name</label>
+            <input type="text" id="signupName" class="input-field" placeholder="Your name" required>
+          </div>
+          <div class="input-group">
+            <label for="signupEmail">Email Address</label>
+            <input type="email" id="signupEmail" class="input-field" placeholder="you@example.com" required>
+          </div>
+          <div class="input-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" class="input-field" placeholder="••••••••" required>
+          </div>
+          <div class="input-group">
+            <label for="signupConfirm">Confirm Password</label>
+            <input type="password" id="signupConfirm" class="input-field" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-fullwidth">Create Account</button>
+        </form>
+
+        <div class="auth-divider">
+          <span>Already have an account?</span>
+        </div>
+        
+        <button type="button" id="switchToLogin" class="btn btn-secondary btn-fullwidth">Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MAIN SITE ============ -->
+  <div id="mainSite" class="site-container" style="display:none">
+    
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="navbar">
+      <div class="navbar-content">
+        <a href="#" id="homeLink" class="navbar-brand">✈️ AirMusic</a>
+        
+        <div class="navbar-search">
+          <input type="text" id="searchPosts" class="search-input" placeholder="🔎 Search stories...">
+        </div>
+
+        <div class="navbar-actions">
+          <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
+          <div class="user-dropdown">
+            <button id="userMenuBtn" class="user-button">👤</button>
+            <div id="userDropdown" class="dropdown-menu">
+              <a href="#" id="profileLink" class="dropdown-item">👤 Profile</a>
+              <a href="#" id="myBlogsLink" class="dropdown-item">📝 My Stories</a>
+              <a href="#" id="categoriesLink" class="dropdown-item">📂 Categories</a>
+              <div class="dropdown-divider"></div>
+              <button id="logoutBtn" class="dropdown-item logout">🚪 Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN LAYOUT -->
+    <div class="layout-container">
+      
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <div class="sidebar-card">
+          <h3 class="sidebar-heading">📂 Explore</h3>
+          <ul id="navList" class="category-nav"></ul>
+        </div>
+
+        <div class="sidebar-card">
+          <h3 class="sidebar-heading">✍️ Create</h3>
+          <button id="createBlogBtn" class="btn btn-primary btn-fullwidth">Write Story</button>
+        </div>
+
+        <div class="sidebar-card">
+          <h3 class="sidebar-heading">🔥 Trending</h3>
+          <div id="trendingSection" class="trending-list"></div>
+        </div>
+
+        <div class="sidebar-card">
+          <h3 class="sidebar-heading">📊 Stats</h3>
+          <div id="statsSection" class="stats-grid"></div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="main-content">
+        <div id="heroSection" class="hero-section"></div>
+        <div id="statsHint" class="content-hint"></div>
+        <div id="postContainer" class="posts-grid"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ============ MODALS ============ -->
+
+  <!-- BLOG EDITOR MODAL -->
+  <div id="blogModal" class="modal" style="display:none">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h2 id="blogModalTitle">✍️ Share Your Story</h2>
+        <button id="closeBlogModal" class="modal-close" title="Close">&times;</button>
+      </div>
+      <form id="blogForm" class="modal-form">
+        <input type="hidden" id="blogId">
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="blogTitle">Story Title</label>
+            <input type="text" id="blogTitle" class="input-field" placeholder="Enter a captivating title..." required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="blogCategory">Category</label>
+            <select id="blogCategory" class="input-field" required></select>
+          </div>
+          <div class="form-group">
+            <label for="blogTags">Tags</label>
+            <input type="text" id="blogTags" class="input-field" placeholder="travel, nature, life">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="blogContent">Your Story</label>
+          <textarea id="blogContent" class="input-field" rows="10" placeholder="Write your heart out..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="blogImage">Featured Image URL</label>
+          <input type="url" id="blogImage" class="input-field" placeholder="https://..." required>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">📤 Publish</button>
+          <button type="button" id="cancelBlogBtn" class="btn btn-secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PROFILE MODAL -->
+  <div id="profileModal" class="modal" style="display:none">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>👤 Edit Profile</h2>
+        <button id="closeProfileModal" class="modal-close">&times;</button>
+      </div>
+      <form id="profileForm" class="modal-form">
+        <div class="form-group">
+          <label for="profileName">Display Name</label>
+          <input type="text" id="profileName" class="input-field" required>
+        </div>
+        <div class="form-group">
+          <label for="profileEmail">Email (unchangeable)</label>
+          <input type="email" id="profileEmail" class="input-field" disabled>
+        </div>
+        <div class="form-group">
+          <label for="profileBio">Bio</label>
+          <textarea id="profileBio" class="input-field" rows="4" placeholder="Tell your story in a few words..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">💾 Save</button>
+          <button type="button" id="cancelProfileBtn" class="btn btn-secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CATEGORY MODAL -->
+  <div id="categoryModal" class="modal" style="display:none">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📂 Manage Categories</h2>
+        <button id="closeCategoryModal" class="modal-close">&times;</button>
+      </div>
+      <div id="categoryList" class="category-manage-grid"></div>
+      
+      <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+        <h3 style="margin-bottom: 1rem;">Add New Category</h3>
+        <div style="display: flex; gap: 0.8rem;">
+          <input type="text" id="newCategory" class="input-field" placeholder="Category name" style="flex: 1;">
+          <button type="button" id="addCategoryBtn" class="btn btn-primary">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY BLOGS MODAL -->
+  <div id="myBlogsModal" class="modal" style="display:none">
+    <div class="modal-overlay"></div>
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h2>📝 My Stories</h2>
+        <button id="closeMyBlogsModal" class="modal-close">&times;</button>
+      </div>
+      <div id="myBlogsList" class="my-blogs-grid"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
