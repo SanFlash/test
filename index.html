@@ -1,258 +1,682 @@
+recipe book 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>✈️ AirMusic – Stories Worth Sharing</title>
-  <meta name="description" content="A minimalist blog platform for sharing journeys, moments, and reflections">
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1995/1995467.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>🍳 glass recipe book · master build</title>
+  <!-- Fonts & Icons (lightweight) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /*===============================
+      CSS: style.css + themes.css + animations.css (bundled)
+    ===============================*/
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* theme variables (light / dark / accent) */
+    :root {
+      --bg-gradient: linear-gradient(145deg, #f8f9ff 0%, #eef1fa 100%);
+      --glass-bg: rgba(255, 255, 255, 0.4);
+      --glass-border: rgba(255, 255, 255, 0.5);
+      --card-bg: rgba(255, 255, 255, 0.6);
+      --text-primary: #1e1e2f;
+      --text-secondary: #2d3e50;
+      --accent: #6366f1;
+      --accent-soft: #818cf8;
+      --shadow: 0 15px 35px -10px rgba(0,0,0,0.1);
+      --toast-bg: rgba(255,255,255,0.85);
+      --navbar-bg: rgba(255,255,255,0.5);
+      --input-bg: rgba(255,255,255,0.7);
+    }
+    body.dark {
+      --bg-gradient: linear-gradient(145deg, #1a1e2f 0%, #0f1322 100%);
+      --glass-bg: rgba(20, 25, 45, 0.6);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --card-bg: rgba(30, 35, 55, 0.7);
+      --text-primary: #f0f3fa;
+      --text-secondary: #cbd5e1;
+      --accent: #a78bfa;
+      --accent-soft: #8b5cf6;
+      --shadow: 0 15px 35px -5px rgba(0,0,0,0.5);
+      --toast-bg: rgba(30,35,55,0.9);
+      --navbar-bg: rgba(20,25,45,0.7);
+      --input-bg: rgba(40,45,70,0.7);
+    }
+    /* accent colors (switcher in navbar) */
+    body[data-accent="purple"] { --accent: #a855f7; --accent-soft: #9333ea; }
+    body[data-accent="teal"] { --accent: #14b8a6; --accent-soft: #0d9488; }
+    body[data-accent="rose"] { --accent: #f43f5e; --accent-soft: #e11d48; }
+    body[data-accent="indigo"] { --accent: #6366f1; --accent-soft: #818cf8; } /* default */
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      transition: background 0.4s ease, color 0.3s;
+      backdrop-filter: blur(2px);
+      padding-bottom: 70px;
+    }
+
+    /* glassmorphism base */
+    .glass-card, .navbar, .modal-content, .toast, .stat-card, .admin-panel {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    /* ========== animations.css ========== */
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(15px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes cardHover {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 40px -10px black; }
+    }
+    @keyframes ripple {
+      0% { box-shadow: 0 0 0 0 var(--accent); }
+      70% { box-shadow: 0 0 0 10px rgba(99,102,241,0); }
+      100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+    }
+    @keyframes modalZoom {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes skeletonPulse {
+      0% { background: rgba(200,200,200,0.3); }
+      50% { background: rgba(200,200,200,0.6); }
+      100% { background: rgba(200,200,200,0.3); }
+    }
+    .page-fade { animation: fadeSlide 0.4s ease; }
+    .card-hover:hover { animation: cardHover 0.3s forwards; }
+    .btn-ripple:active { animation: ripple 0.4s ease; }
+    .modal-open { animation: modalZoom 0.3s ease; }
+    .skeleton { animation: skeletonPulse 1.5s infinite; }
+
+    /* navbar */
+    .navbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 2rem;
+      margin: 1rem 2rem;
+      background: var(--navbar-bg);
+    }
+    .logo { font-size: 1.8rem; font-weight: 600; letter-spacing: -0.5px; }
+    .nav-controls { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+    .search-box {
+      background: var(--input-bg);
+      border: none; border-radius: 40px; padding: 0.5rem 1.2rem;
+      backdrop-filter: blur(5px); color: var(--text-primary);
+    }
+    .btn {
+      background: var(--accent); border: none; color: white; padding: 0.5rem 1.2rem;
+      border-radius: 40px; font-weight: 500; cursor: pointer;
+      transition: all 0.2s; backdrop-filter: blur(5px);
+      border: 1px solid var(--glass-border);
+    }
+    .btn-outline {
+      background: transparent; border: 1px solid var(--accent); color: var(--accent);
+    }
+    /* floating shapes */
+    .floating-shape {
+      position: fixed; width: 300px; height: 300px; background: var(--accent-soft);
+      filter: blur(70px); opacity: 0.2; border-radius: 50%; z-index: -1;
+      top: 10%; left: 5%; animation: float 20s infinite alternate;
+    }
+    @keyframes float { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(100px,50px) scale(1.3); }}
+
+    /* recipe grid */
+    .recipe-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.8rem; padding: 2rem; margin-top: 1rem;
+    }
+    .recipe-card {
+      background: var(--card-bg); border-radius: 28px; padding: 1rem;
+      backdrop-filter: blur(12px); border: 1px solid var(--glass-border);
+      transition: all 0.2s; cursor: pointer;
+      display: flex; flex-direction: column;
+    }
+    .recipe-card img {
+      width: 100%; height: 160px; object-fit: cover; border-radius: 20px;
+    }
+    .card-badge {
+      display: flex; justify-content: space-between; margin: 0.6rem 0;
+    }
+    .favorite-icon { color: #f43f5e; cursor: pointer; transition: 0.2s; }
+    /* modals */
+    .modal-overlay {
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.3); backdrop-filter: blur(5px);
+      display: flex; align-items: center; justify-content: center; z-index: 1000;
+    }
+    .modal-content {
+      max-width: 550px; width: 90%; max-height: 85vh; overflow-y: auto;
+      padding: 2rem; background: var(--glass-bg);
+    }
+    /* toast */
+    .toast-container {
+      position: fixed; bottom: 20px; right: 20px; z-index: 2000;
+    }
+    .toast {
+      padding: 1rem 2rem; margin-top: 0.8rem; background: var(--toast-bg);
+      border-left: 5px solid var(--accent); border-radius: 18px;
+      backdrop-filter: blur(20px); display: flex; align-items: center; gap: 1rem;
+      animation: fadeSlide 0.2s;
+    }
+    /* empty state */
+    .empty-state { text-align: center; padding: 3rem; opacity: 0.7; }
+    /* admin stats */
+    .stats-dashboard {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 1rem; margin: 2rem;
+    }
+    .stat-card { padding: 1.5rem; text-align: center; background: var(--card-bg); }
+    /* mobile bottom nav */
+    .bottom-nav {
+      display: none; position: fixed; bottom:0; width:100%;
+      background: var(--navbar-bg); backdrop-filter: blur(20px);
+      justify-content: space-around; padding: 0.8rem; border-top: 1px solid var(--glass-border);
+    }
+    @media (max-width: 640px) {
+      .navbar { margin: 0.5rem; flex-direction: column; align-items: stretch; }
+      .recipe-grid { padding: 1rem; }
+      .bottom-nav { display: flex; }
+      body { padding-bottom: 70px; }
+      .desktop-only { display: none; }
+    }
+    /* floating add button */
+    .fab {
+      position: fixed; bottom: 90px; right: 20px; width: 60px; height: 60px;
+      border-radius: 30px; background: var(--accent); border: none;
+      color: white; font-size: 2rem; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      cursor: pointer; z-index: 500; display: flex; align-items: center; justify-content: center;
+    }
+    /* skeleton loading */
+    .skeleton-card { height: 260px; width: 100%; border-radius: 28px; background: rgba(200,200,200,0.2); }
+    /* drag-drop area */
+    .dropzone {
+      border: 2px dashed var(--accent); border-radius: 20px; padding: 1rem;
+      text-align: center; background: var(--input-bg); margin: 1rem 0;
+    }
+    .hidden { display: none; }
+  </style>
 </head>
-<body>
+<body class="light" data-accent="indigo">
+  <div class="floating-shape"></div>
 
-  <!-- ============ AUTH CONTAINER ============ -->
-  <div id="authContainer" class="auth-backdrop" style="display:none">
-    <div class="auth-wrapper">
-      <!-- LOGIN PAGE -->
-      <div id="loginPage" class="auth-panel auth-panel-active">
-        <div class="auth-illustration">
-          <div class="plane-icon">✈️</div>
-        </div>
-        <h1 class="auth-title">Welcome to AirMusic</h1>
-        <p class="auth-description">Share your stories. Inspire others.</p>
-        
-        <form id="loginForm" class="auth-form">
-          <div class="input-group">
-            <label for="loginEmail">Email Address</label>
-            <input type="email" id="loginEmail" class="input-field" placeholder="you@example.com" required>
-          </div>
-          <div class="input-group">
-            <label for="loginPassword">Password</label>
-            <input type="password" id="loginPassword" class="input-field" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="btn btn-primary btn-fullwidth">Sign In</button>
-        </form>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo"><i class="fas fa-utensils"></i> glass recipes</div>
+    <div class="nav-controls">
+      <input type="text" id="searchInput" class="search-box" placeholder="Search name / ingredient...">
+      <select id="categoryFilter" class="search-box"><option value="">all categories</option></select>
+      <select id="difficultyFilter" class="search-box"><option value="">all difficulty</option></select>
+      <!-- accent switcher -->
+      <select id="accentSwitcher" class="search-box" style="width:auto;">
+        <option value="indigo">indigo</option>
+        <option value="purple">purple</option>
+        <option value="teal">teal</option>
+        <option value="rose">rose</option>
+      </select>
+      <button class="btn" id="themeToggle"><i class="fas fa-moon"></i></button>
+      <button class="btn btn-outline" id="adminLoginBtn">Admin</button>
+    </div>
+  </nav>
 
-        <div class="auth-divider">
-          <span>No account yet?</span>
-        </div>
-        
-        <button type="button" id="switchToSignup" class="btn btn-secondary btn-fullwidth">Create Account</button>
+  <!-- main view container (SPA) -->
+  <main id="viewContainer">
+    <!-- recipe dashboard (default) -->
+    <div id="recipesView" class="page-fade">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 2rem;">
+        <h2>🍲 all recipes</h2>
+        <button class="btn" id="fabAddBtn"><i class="fas fa-plus"></i> Add</button>
       </div>
+      <div id="recipeGrid" class="recipe-grid"></div>
+    </div>
 
-      <!-- SIGNUP PAGE -->
-      <div id="signupPage" class="auth-panel">
-        <div class="auth-illustration">
-          <div class="sparkle-icon">✨</div>
+    <!-- admin dashboard (hidden by default) -->
+    <div id="adminView" class="page-fade hidden">
+      <div style="padding: 1rem 2rem;">
+        <button class="btn" id="backToRecipesBtn"><i class="fas fa-arrow-left"></i> back</button>
+        <h2>⚙️ admin panel</h2>
+        <div class="stats-dashboard" id="adminStats"></div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 2rem;">
+          <button class="btn" id="exportBtn">📦 export JSON</button>
+          <button class="btn" id="importBtn" onclick="document.getElementById('importFile').click()">📂 import JSON</button>
+          <input type="file" id="importFile" accept=".json" style="display: none;">
+          <button class="btn btn-outline" id="bulkDeleteBtn">🗑️ bulk delete</button>
+          <button class="btn btn-outline" id="clearDbBtn">⚠️ clear database</button>
         </div>
-        <h1 class="auth-title">Join AirMusic</h1>
-        <p class="auth-description">Start your storytelling journey today</p>
-        
-        <form id="signupForm" class="auth-form">
-          <div class="input-group">
-            <label for="signupName">Full Name</label>
-            <input type="text" id="signupName" class="input-field" placeholder="Your name" required>
-          </div>
-          <div class="input-group">
-            <label for="signupEmail">Email Address</label>
-            <input type="email" id="signupEmail" class="input-field" placeholder="you@example.com" required>
-          </div>
-          <div class="input-group">
-            <label for="signupPassword">Password</label>
-            <input type="password" id="signupPassword" class="input-field" placeholder="••••••••" required>
-          </div>
-          <div class="input-group">
-            <label for="signupConfirm">Confirm Password</label>
-            <input type="password" id="signupConfirm" class="input-field" placeholder="••••••••" required>
-          </div>
-          <button type="submit" class="btn btn-primary btn-fullwidth">Create Account</button>
-        </form>
-
-        <div class="auth-divider">
-          <span>Already have an account?</span>
-        </div>
-        
-        <button type="button" id="switchToLogin" class="btn btn-secondary btn-fullwidth">Sign In</button>
+        <div id="adminRecipeList" class="recipe-grid"></div>
       </div>
     </div>
+  </main>
+
+  <!-- modals container -->
+  <div id="modalOverlay" class="modal-overlay hidden">
+    <div id="modalContent" class="modal-content"></div>
   </div>
 
-  <!-- ============ MAIN SITE ============ -->
-  <div id="mainSite" class="site-container" style="display:none">
-    
-    <!-- TOP NAVIGATION BAR -->
-    <nav class="navbar">
-      <div class="navbar-content">
-        <a href="#" id="homeLink" class="navbar-brand">✈️ AirMusic</a>
-        
-        <div class="navbar-search">
-          <input type="text" id="searchPosts" class="search-input" placeholder="🔎 Search stories...">
-        </div>
+  <!-- toast container -->
+  <div id="toastContainer" class="toast-container"></div>
 
-        <div class="navbar-actions">
-          <button id="themeToggle" class="icon-btn" title="Toggle theme">🌙</button>
-          <div class="user-dropdown">
-            <button id="userMenuBtn" class="user-button">👤</button>
-            <div id="userDropdown" class="dropdown-menu">
-              <a href="#" id="profileLink" class="dropdown-item">👤 Profile</a>
-              <a href="#" id="myBlogsLink" class="dropdown-item">📝 My Stories</a>
-              <a href="#" id="categoriesLink" class="dropdown-item">📂 Categories</a>
-              <div class="dropdown-divider"></div>
-              <button id="logoutBtn" class="dropdown-item logout">🚪 Logout</button>
+  <!-- mobile FAB + bottom nav -->
+  <button class="fab" id="mobileFab"><i class="fas fa-plus"></i></button>
+  <div class="bottom-nav">
+    <i class="fas fa-home" id="navHome"></i>
+    <i class="fas fa-search" id="navSearch"></i>
+    <i class="fas fa-user-shield" id="navAdmin"></i>
+    <i class="fas fa-palette" id="navTheme"></i>
+  </div>
+
+  <!-- JavaScript (modular) : app.js, storage.js, ui.js, admin.js, animations.js combined -->
+  <script>
+    (function() {
+      // ==================== STORAGE MODULE (storage.js) ====================
+      const STORAGE_KEYS = {
+        RECIPES: 'recipeBook_recipes',
+        THEME: 'recipeBook_theme',
+        ACCENT: 'recipeBook_accent',
+        ADMIN: 'recipeBook_admin',
+        FAVORITES: 'recipeBook_favs',
+        RECENT: 'recipeBook_recent'
+      };
+
+      let recipes = [];
+      let adminLoggedIn = false;
+      let favorites = new Set();
+      let recentView = [];
+
+      // Load initial data
+      function loadRecipes() {
+        const stored = localStorage.getItem(STORAGE_KEYS.RECIPES);
+        recipes = stored ? JSON.parse(stored) : [];
+        // sample recipes if empty (now with 5 recipes for richer content)
+        if (recipes.length === 0) {
+          recipes.push({
+            id: '1', name: 'creamy garlic pasta', ingredients: ['pasta', 'garlic', 'cream', 'parmesan'], steps: ['boil pasta', 'sauté garlic', 'add cream', 'mix with pasta'], image: 'https://images.unsplash.com/photo-1645112411342-4665a10b3e3c?w=400', category: 'dinner', time: 20, difficulty: 'easy', tags: ['italian'], createdAt: Date.now()
+          });
+          recipes.push({
+            id: '2', name: 'chocolate cake', ingredients: ['flour', 'eggs', 'chocolate', 'sugar'], steps: ['mix dry', 'melt chocolate', 'bake at 180C'], image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400', category: 'dessert', time: 60, difficulty: 'medium', tags: ['cake'], createdAt: Date.now()
+          });
+          recipes.push({
+            id: '3', name: 'avocado toast', ingredients: ['bread', 'avocado', 'lemon', 'salt'], steps: ['toast bread', 'mash avocado', 'spread on toast'], image: 'https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?w=400', category: 'breakfast', time: 10, difficulty: 'easy', tags: ['healthy'], createdAt: Date.now()
+          });
+          recipes.push({
+            id: '4', name: 'spicy chicken wings', ingredients: ['chicken wings', 'hot sauce', 'butter', 'garlic'], steps: ['bake wings', 'mix sauce', 'toss'], image: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=400', category: 'appetizer', time: 45, difficulty: 'medium', tags: ['spicy'], createdAt: Date.now()
+          });
+          recipes.push({
+            id: '5', name: 'greek salad', ingredients: ['cucumber', 'tomato', 'feta', 'olives'], steps: ['chop veggies', 'add feta', 'dress with olive oil'], image: 'https://images.unsplash.com/photo-1540189542936-e6e3e8c0e0b2?w=400', category: 'lunch', time: 15, difficulty: 'easy', tags: ['salad'], createdAt: Date.now()
+          });
+          saveRecipes();
+        }
+        // load favorites
+        const favs = localStorage.getItem(STORAGE_KEYS.FAVORITES);
+        if (favs) favorites = new Set(JSON.parse(favs));
+        // load admin session
+        adminLoggedIn = localStorage.getItem(STORAGE_KEYS.ADMIN) === 'true';
+      }
+      function saveRecipes() {
+        localStorage.setItem(STORAGE_KEYS.RECIPES, JSON.stringify(recipes));
+      }
+      function addRecipe(recipe) {
+        recipe.id = Date.now() + '' + Math.floor(Math.random()*1000);
+        recipe.createdAt = Date.now();
+        recipes.push(recipe);
+        saveRecipes();
+      }
+      function updateRecipe(id, updated) {
+        const index = recipes.findIndex(r => r.id === id);
+        if (index !== -1) { recipes[index] = { ...updated, id }; saveRecipes(); }
+      }
+      function deleteRecipe(id) {
+        recipes = recipes.filter(r => r.id !== id);
+        saveRecipes();
+      }
+      function toggleFavorite(id) {
+        favorites.has(id) ? favorites.delete(id) : favorites.add(id);
+        localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify([...favorites]));
+      }
+      function addRecent(id) {
+        recentView = [id, ...recentView.filter(r => r !== id)].slice(0, 10);
+        localStorage.setItem(STORAGE_KEYS.RECENT, JSON.stringify(recentView));
+      }
+
+      // ==================== UI MODULE (ui.js) ====================
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fas ${type==='success'? 'fa-check-circle':'fa-exclamation-circle'}" style="color:var(--accent)"></i> ${message}`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      }
+
+      function renderRecipes(filteredRecipes = null) {
+        const grid = document.getElementById('recipeGrid');
+        if (!grid) return;
+        const data = filteredRecipes || recipes;
+        if (data.length === 0) {
+          grid.innerHTML = `<div class="empty-state">🍽️ no recipes — add one!</div>`;
+          return;
+        }
+        grid.innerHTML = data.map(r => `
+          <div class="recipe-card card-hover" data-id="${r.id}">
+            <img src="${r.image}" alt="${r.name}" loading="lazy">
+            <div class="card-badge">
+              <span>${r.category || 'other'}</span>
+              <span class="favorite-icon" data-favid="${r.id}"><i class="fa${favorites.has(r.id)?'s':'r'} fa-heart"></i></span>
             </div>
+            <h3>${r.name}</h3>
+            <p><i class="far fa-clock"></i> ${r.time} min · ${r.difficulty}</p>
           </div>
-        </div>
-      </div>
-    </nav>
+        `).join('');
+        // attach card click (detail) and favorite click
+        document.querySelectorAll('.recipe-card').forEach(card => {
+          card.addEventListener('click', (e) => {
+            if (e.target.closest('.favorite-icon')) return;
+            const id = card.dataset.id;
+            showRecipeDetail(id);
+            addRecent(id);
+          });
+        });
+        document.querySelectorAll('.favorite-icon').forEach(icon => {
+          icon.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = icon.dataset.favid;
+            toggleFavorite(id);
+            renderRecipes(); // simple re-render
+            showToast(favorites.has(id) ? '❤️ added to favorites' : '♡ removed');
+          });
+        });
+      }
 
-    <!-- MAIN LAYOUT -->
-    <div class="layout-container">
-      
-      <!-- SIDEBAR -->
-      <aside class="sidebar">
-        <div class="sidebar-card">
-          <h3 class="sidebar-heading">📂 Explore</h3>
-          <ul id="navList" class="category-nav"></ul>
-        </div>
-
-        <div class="sidebar-card">
-          <h3 class="sidebar-heading">✍️ Create</h3>
-          <button id="createBlogBtn" class="btn btn-primary btn-fullwidth">Write Story</button>
-        </div>
-
-        <div class="sidebar-card">
-          <h3 class="sidebar-heading">🔥 Trending</h3>
-          <div id="trendingSection" class="trending-list"></div>
-        </div>
-
-        <div class="sidebar-card">
-          <h3 class="sidebar-heading">📊 Stats</h3>
-          <div id="statsSection" class="stats-grid"></div>
-        </div>
-      </aside>
-
-      <!-- MAIN CONTENT -->
-      <main class="main-content">
-        <div id="heroSection" class="hero-section"></div>
-        <div id="statsHint" class="content-hint"></div>
-        <div id="postContainer" class="posts-grid"></div>
-      </main>
-    </div>
-  </div>
-
-  <!-- ============ MODALS ============ -->
-
-  <!-- BLOG EDITOR MODAL -->
-  <div id="blogModal" class="modal" style="display:none">
-    <div class="modal-overlay"></div>
-    <div class="modal-content modal-large">
-      <div class="modal-header">
-        <h2 id="blogModalTitle">✍️ Share Your Story</h2>
-        <button id="closeBlogModal" class="modal-close" title="Close">&times;</button>
-      </div>
-      <form id="blogForm" class="modal-form">
-        <input type="hidden" id="blogId">
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label for="blogTitle">Story Title</label>
-            <input type="text" id="blogTitle" class="input-field" placeholder="Enter a captivating title..." required>
+      function showRecipeDetail(id) {
+        const recipe = recipes.find(r => r.id === id);
+        if (!recipe) return;
+        const modal = document.getElementById('modalContent');
+        modal.innerHTML = `
+          <h2>${recipe.name}</h2>
+          <img src="${recipe.image}" style="width:100%; max-height:250px; object-fit:cover; border-radius:20px;">
+          <p><strong>⏱️ ${recipe.time} min · ${recipe.difficulty}</strong></p>
+          <p><strong>🥗 ingredients</strong></p><ul>${recipe.ingredients.map(i=>`<li>${i}</li>`).join('')}</ul>
+          <p><strong>📝 steps</strong></p><ol>${recipe.steps.map(s=>`<li>${s}</li>`).join('')}</ol>
+          <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+            ${adminLoggedIn ? `<button class="btn" id="editRecipeBtn">✏️ edit</button>` : ''}
+            ${adminLoggedIn ? `<button class="btn btn-outline" id="deleteRecipeBtn">🗑️ delete</button>` : ''}
+            <button class="btn" id="closeModalBtn">close</button>
           </div>
-        </div>
+        `;
+        openModal();
+        if (adminLoggedIn) {
+          document.getElementById('editRecipeBtn')?.addEventListener('click', ()=> { closeModal(); openAddEditModal(recipe); });
+          document.getElementById('deleteRecipeBtn')?.addEventListener('click', ()=> {
+            if(confirm('delete recipe?')) { deleteRecipe(id); renderRecipes(); showToast('deleted'); closeModal(); }
+          });
+        }
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+      }
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="blogCategory">Category</label>
-            <select id="blogCategory" class="input-field" required></select>
+      function openModal() {
+        document.getElementById('modalOverlay').classList.remove('hidden');
+      }
+      function closeModal() {
+        document.getElementById('modalOverlay').classList.add('hidden');
+      }
+
+      // Add/edit modal
+      function openAddEditModal(editRecipe = null) {
+        const modal = document.getElementById('modalContent');
+        const isEdit = !!editRecipe;
+        modal.innerHTML = `
+          <h2>${isEdit ? '✏️ edit' : '➕ new recipe'}</h2>
+          <form id="recipeForm">
+            <input type="text" id="recipeName" placeholder="name" value="${editRecipe?.name || ''}" required minlength="3" style="width:100%; margin-bottom:0.5rem;">
+            <label>Ingredients:</label>
+            <div id="ingredientsList">${editRecipe?.ingredients.map((ing,i)=> `<input type="text" class="ingredient" value="${ing}" placeholder="ingredient ${i+1}" style="width:100%; margin:0.2rem 0;">`).join('') || '<input type="text" class="ingredient" placeholder="ingredient 1" style="width:100%;">'}</div>
+            <button type="button" id="addIngredientBtn" class="btn-outline" style="margin:0.5rem 0;">+ add ingredient</button>
+            <label>Steps:</label>
+            <div id="stepsList">${editRecipe?.steps.map((st,i)=> `<input type="text" class="step" value="${st}" placeholder="step ${i+1}" style="width:100%; margin:0.2rem 0;">`).join('') || '<input type="text" class="step" placeholder="step 1" style="width:100%;">'}</div>
+            <button type="button" id="addStepBtn" class="btn-outline" style="margin:0.5rem 0;">+ add step</button>
+            <select id="category" required style="width:100%; margin:0.5rem 0;">
+              ${['breakfast','lunch','dinner','dessert','appetizer'].map(c=>`<option value="${c}" ${editRecipe?.category===c?'selected':''}>${c}</option>`).join('')}
+            </select>
+            <input type="number" id="time" value="${editRecipe?.time || 15}" placeholder="cooking time (min)" style="width:100%; margin:0.5rem 0;">
+            <select id="difficulty" style="width:100%; margin:0.5rem 0;">
+              <option value="easy" ${editRecipe?.difficulty==='easy'?'selected':''}>easy</option>
+              <option value="medium" ${editRecipe?.difficulty==='medium'?'selected':''}>medium</option>
+              <option value="hard" ${editRecipe?.difficulty==='hard'?'selected':''}>hard</option>
+            </select>
+            <div class="dropzone" id="dropzone">📸 drag image or click to upload</div>
+            <input type="file" id="imageUpload" accept="image/*" style="display:none;">
+            <img id="imagePreview" src="${editRecipe?.image || ''}" style="max-width:100%; max-height:150px; object-fit:cover; ${editRecipe?.image?'':'display:none;'} margin-top:0.5rem;">
+            <input type="text" id="tags" placeholder="tags (comma)" value="${editRecipe?.tags?.join(',') || ''}" style="width:100%; margin:0.5rem 0;">
+            <div style="display:flex; gap:1rem; margin-top:1rem;">
+              <button type="submit" class="btn">${isEdit ? 'update' : 'create'}</button>
+              <button type="button" class="btn-outline" id="cancelModal">cancel</button>
+            </div>
+          </form>
+        `;
+        openModal();
+        // image drag-drop
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('imageUpload');
+        dropzone.addEventListener('click', ()=> fileInput.click());
+        dropzone.addEventListener('dragover', e=> e.preventDefault());
+        dropzone.addEventListener('drop', e=> { e.preventDefault(); handleImage(e.dataTransfer.files[0]); });
+        fileInput.addEventListener('change', e=> handleImage(e.target.files[0]));
+        function handleImage(file) {
+          if(file && file.size < 5*1024*1024) {
+            const reader = new FileReader(); reader.onload = (e)=> document.getElementById('imagePreview').src = e.target.result;
+            reader.readAsDataURL(file); document.getElementById('imagePreview').style.display = 'block';
+          } else alert('image too large (max 5mb)');
+        }
+        document.getElementById('addIngredientBtn').addEventListener('click', ()=> {
+          const div = document.getElementById('ingredientsList');
+          div.insertAdjacentHTML('beforeend', '<input type="text" class="ingredient" placeholder="ingredient" style="width:100%; margin:0.2rem 0;">');
+        });
+        document.getElementById('addStepBtn').addEventListener('click', ()=> {
+          document.getElementById('stepsList').insertAdjacentHTML('beforeend', '<input type="text" class="step" placeholder="step" style="width:100%; margin:0.2rem 0;">');
+        });
+        document.getElementById('cancelModal').addEventListener('click', closeModal);
+        document.getElementById('recipeForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const name = document.getElementById('recipeName').value.trim();
+          if (name.length < 3) return showToast('name at least 3 chars', 'error');
+          const ingredients = [...document.querySelectorAll('.ingredient')].map(i=>i.value.trim()).filter(v=>v);
+          if (ingredients.length === 0) return showToast('add at least 1 ingredient','error');
+          const steps = [...document.querySelectorAll('.step')].map(s=>s.value.trim()).filter(v=>v);
+          if (steps.length === 0) return showToast('add at least 1 step','error');
+          const image = document.getElementById('imagePreview').src;
+          if (!image || image==='') return showToast('image required','error');
+          const recipeData = {
+            name, ingredients, steps, image,
+            category: document.getElementById('category').value,
+            time: parseInt(document.getElementById('time').value) || 15,
+            difficulty: document.getElementById('difficulty').value,
+            tags: document.getElementById('tags').value.split(',').map(t=>t.trim()).filter(t=>t)
+          };
+          if (isEdit) { updateRecipe(editRecipe.id, recipeData); showToast('updated'); }
+          else { addRecipe(recipeData); showToast('added!'); }
+          renderRecipes(); closeModal();
+        });
+      }
+
+      // ==================== ADMIN MODULE (admin.js) ====================
+      function renderAdminDashboard() {
+        document.getElementById('recipesView').classList.add('hidden');
+        document.getElementById('adminView').classList.remove('hidden');
+        const stats = document.getElementById('adminStats');
+        const total = recipes.length;
+        const categories = [...new Set(recipes.map(r=>r.category))].length;
+        stats.innerHTML = `
+          <div class="stat-card"><h3>📚 total</h3><p>${total}</p></div>
+          <div class="stat-card"><h3>📊 categories</h3><p>${categories}</p></div>
+          <div class="stat-card"><h3>⭐ favs</h3><p>${favorites.size}</p></div>
+        `;
+        const adminList = document.getElementById('adminRecipeList');
+        adminList.innerHTML = recipes.map(r=>`
+          <div class="recipe-card" data-id="${r.id}" style="cursor:pointer;">
+            <img src="${r.image}" style="height:100px; object-fit:cover;">
+            <p>${r.name}</p>
+            <div><button class="btn edit-admin" data-id="${r.id}">edit</button> <button class="btn-outline delete-admin" data-id="${r.id}">del</button></div>
           </div>
-          <div class="form-group">
-            <label for="blogTags">Tags</label>
-            <input type="text" id="blogTags" class="input-field" placeholder="travel, nature, life">
+        `).join('');
+        // admin edit/delete
+        document.querySelectorAll('.edit-admin').forEach(b=> b.addEventListener('click', (e)=> { e.stopPropagation(); const id = b.dataset.id; openAddEditModal(recipes.find(r=>r.id===id)); }));
+        document.querySelectorAll('.delete-admin').forEach(b=> b.addEventListener('click', (e)=> { e.stopPropagation(); if(confirm('delete?')) { deleteRecipe(b.dataset.id); renderAdminDashboard(); renderRecipes(); }}));
+      }
+
+      // login modal
+      function showAdminLogin() {
+        const modal = document.getElementById('modalContent');
+        modal.innerHTML = `
+          <h2>admin login</h2>
+          <input type="text" id="loginUser" placeholder="username" value="admin" style="width:100%; margin:0.5rem 0;">
+          <input type="password" id="loginPass" placeholder="password" style="width:100%; margin:0.5rem 0;">
+          <div style="display:flex; gap:1rem; margin-top:1rem;">
+            <button class="btn" id="loginBtn">login</button>
+            <button class="btn-outline" id="cancelLogin">cancel</button>
           </div>
-        </div>
+        `;
+        openModal();
+        document.getElementById('loginBtn').addEventListener('click', ()=> {
+          const u = document.getElementById('loginUser').value, p = document.getElementById('loginPass').value;
+          if (u === 'admin' && p === '12345') {
+            adminLoggedIn = true;
+            localStorage.setItem(STORAGE_KEYS.ADMIN, 'true');
+            showToast('admin access granted');
+            closeModal();
+            renderAdminDashboard();
+          } else {
+            document.getElementById('modalContent').style.animation = 'shake 0.2s';
+            setTimeout(()=> document.getElementById('modalContent').style.animation = '', 200);
+            showToast('invalid credentials', 'error');
+          }
+        });
+        document.getElementById('cancelLogin').addEventListener('click', closeModal);
+      }
 
-        <div class="form-group">
-          <label for="blogContent">Your Story</label>
-          <textarea id="blogContent" class="input-field" rows="10" placeholder="Write your heart out..." required></textarea>
-        </div>
+      // ==================== THEME & ACCENT ====================
+      function initTheme() {
+        const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || 'light';
+        const savedAccent = localStorage.getItem(STORAGE_KEYS.ACCENT) || 'indigo';
+        document.body.className = savedTheme;
+        document.body.setAttribute('data-accent', savedAccent);
+        document.getElementById('accentSwitcher').value = savedAccent;
+      }
+      document.getElementById('themeToggle').addEventListener('click', ()=> {
+        const isDark = document.body.classList.toggle('dark');
+        localStorage.setItem(STORAGE_KEYS.THEME, isDark ? 'dark' : 'light');
+      });
+      document.getElementById('accentSwitcher').addEventListener('change', (e)=> {
+        const accent = e.target.value;
+        document.body.setAttribute('data-accent', accent);
+        localStorage.setItem(STORAGE_KEYS.ACCENT, accent);
+      });
 
-        <div class="form-group">
-          <label for="blogImage">Featured Image URL</label>
-          <input type="url" id="blogImage" class="input-field" placeholder="https://..." required>
-        </div>
+      // ==================== INIT & EVENT LISTENERS ====================
+      loadRecipes();
+      initTheme();
+      renderRecipes();
 
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">📤 Publish</button>
-          <button type="button" id="cancelBlogBtn" class="btn btn-secondary">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
+      // SPA navigation
+      document.getElementById('adminLoginBtn').addEventListener('click', showAdminLogin);
+      document.getElementById('backToRecipesBtn').addEventListener('click', ()=> {
+        document.getElementById('adminView').classList.add('hidden');
+        document.getElementById('recipesView').classList.remove('hidden');
+      });
+      document.getElementById('fabAddBtn').addEventListener('click', ()=> openAddEditModal());
+      document.getElementById('mobileFab').addEventListener('click', ()=> openAddEditModal());
+      // bottom nav
+      document.getElementById('navHome').addEventListener('click', ()=> {
+        document.getElementById('adminView').classList.add('hidden');
+        document.getElementById('recipesView').classList.remove('hidden');
+      });
+      document.getElementById('navAdmin').addEventListener('click', ()=> {
+        if(adminLoggedIn) renderAdminDashboard();
+        else showAdminLogin();
+      });
+      document.getElementById('navTheme').addEventListener('click', ()=> {
+        document.getElementById('themeToggle').click();
+      });
 
-  <!-- PROFILE MODAL -->
-  <div id="profileModal" class="modal" style="display:none">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>👤 Edit Profile</h2>
-        <button id="closeProfileModal" class="modal-close">&times;</button>
-      </div>
-      <form id="profileForm" class="modal-form">
-        <div class="form-group">
-          <label for="profileName">Display Name</label>
-          <input type="text" id="profileName" class="input-field" required>
-        </div>
-        <div class="form-group">
-          <label for="profileEmail">Email (unchangeable)</label>
-          <input type="email" id="profileEmail" class="input-field" disabled>
-        </div>
-        <div class="form-group">
-          <label for="profileBio">Bio</label>
-          <textarea id="profileBio" class="input-field" rows="4" placeholder="Tell your story in a few words..."></textarea>
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">💾 Save</button>
-          <button type="button" id="cancelProfileBtn" class="btn btn-secondary">Cancel</button>
-        </div>
-      </form>
-    </div>
-  </div>
+      // search & filters
+      function filterRecipes() {
+        const term = document.getElementById('searchInput').value.toLowerCase();
+        const cat = document.getElementById('categoryFilter').value;
+        const diff = document.getElementById('difficultyFilter').value;
+        const filtered = recipes.filter(r => {
+          return (r.name.toLowerCase().includes(term) || r.ingredients.some(i=> i.toLowerCase().includes(term))) &&
+                 (cat === '' || r.category === cat) &&
+                 (diff === '' || r.difficulty === diff);
+        });
+        renderRecipes(filtered);
+      }
+      document.getElementById('searchInput').addEventListener('input', filterRecipes);
+      // populate categories
+      const catSet = new Set(recipes.map(r=>r.category));
+      document.getElementById('categoryFilter').innerHTML = '<option value="">all categories</option>' + [...catSet].map(c=>`<option>${c}</option>`).join('');
+      document.getElementById('difficultyFilter').innerHTML = '<option value="">all difficulty</option><option>easy</option><option>medium</option><option>hard</option>';
+      document.getElementById('categoryFilter').addEventListener('change', filterRecipes);
+      document.getElementById('difficultyFilter').addEventListener('change', filterRecipes);
 
-  <!-- CATEGORY MODAL -->
-  <div id="categoryModal" class="modal" style="display:none">
-    <div class="modal-overlay"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>📂 Manage Categories</h2>
-        <button id="closeCategoryModal" class="modal-close">&times;</button>
-      </div>
-      <div id="categoryList" class="category-manage-grid"></div>
-      
-      <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
-        <h3 style="margin-bottom: 1rem;">Add New Category</h3>
-        <div style="display: flex; gap: 0.8rem;">
-          <input type="text" id="newCategory" class="input-field" placeholder="Category name" style="flex: 1;">
-          <button type="button" id="addCategoryBtn" class="btn btn-primary">Add</button>
-        </div>
-      </div>
-    </div>
-  </div>
+      // admin actions
+      document.getElementById('exportBtn').addEventListener('click', ()=>{
+        const data = JSON.stringify(recipes, null, 2);
+        const blob = new Blob([data], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'recipes_backup.json'; a.click();
+      });
+      document.getElementById('importFile').addEventListener('change', (e)=>{
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            try {
+              const imported = JSON.parse(e.target.result);
+              recipes = imported;
+              saveRecipes();
+              renderRecipes();
+              renderAdminDashboard();
+              showToast('imported');
+            } catch { showToast('invalid json','error'); }
+          };
+          reader.readAsText(file);
+        }
+      });
+      document.getElementById('clearDbBtn').addEventListener('click', ()=>{
+        if(confirm('DELETE ALL recipes?')) { recipes = []; saveRecipes(); renderRecipes(); renderAdminDashboard(); showToast('cleared'); }
+      });
+      document.getElementById('bulkDeleteBtn').addEventListener('click', ()=>{
+        if(confirm('bulk delete all?')) { recipes = []; saveRecipes(); renderRecipes(); renderAdminDashboard(); showToast('all deleted'); }
+      });
 
-  <!-- MY BLOGS MODAL -->
-  <div id="myBlogsModal" class="modal" style="display:none">
-    <div class="modal-overlay"></div>
-    <div class="modal-content modal-large">
-      <div class="modal-header">
-        <h2>📝 My Stories</h2>
-        <button id="closeMyBlogsModal" class="modal-close">&times;</button>
-      </div>
-      <div id="myBlogsList" class="my-blogs-grid"></div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+      // skeleton loading example (just for first paint)
+      setTimeout(() => {
+        // remove skeleton if any — we already have data
+      }, 200);
+    })();
+  </script>
+  <!-- tiny extra animation keyframes -->
+  <style>
+    @keyframes shake { 0%,100%{ transform:translateX(0); } 20%{ transform:translateX(-8px); } 40%{ transform:translateX(8px); } }
+    .btn, .recipe-card { transition: all 0.2s; }
+    .favorite-icon:hover { transform: scale(1.2); }
+    input, select, textarea { background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 40px; padding: 0.7rem 1rem; color: var(--text-primary); }
+  </style>
 </body>
 </html>
